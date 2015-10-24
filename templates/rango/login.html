@@ -1,11 +1,10 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Rango</title>
-    </head>
-    <body>
+{% extends 'rango/base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block body_block %}
         <h1>Login to Rango</h1>
-        <form id="login_form" method="post" action="/rango/login/">
+        <form id="login_form" method="post" action="{% url 'login' %}">
             {% csrf_token %}
             {% if login_error %}
                 <strong>Login Error: Invalid username/password</strong><br />
@@ -16,5 +15,4 @@
             <br />
             <input type="submit" value="Log in" />
         </form>
-    </body>
-</html>
+ {% endblock %}

@@ -1,9 +1,9 @@
-from django.shortcuts import render
-from django.http import HttpResponseRedirect, HttpResponse
-from rango.models import Category, Page
-from rango.forms import CategoryForm, PageForm, UserForm, UserProfileForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect, HttpResponse
+from django.shortcuts import render
+from rango.forms import CategoryForm, PageForm, UserForm, UserProfileForm
+from rango.models import Category, Page
 
 
 def index(request):
