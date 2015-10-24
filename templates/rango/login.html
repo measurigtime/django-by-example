@@ -7,9 +7,14 @@
         <h1>Login to Rango</h1>
         <form id="login_form" method="post" action="/rango/login/">
             {% csrf_token %}
+            {% if login_error %}
+                <strong>Login Error: Invalid username/password</strong><br />
+            {% endif %}
             Username: <input type="text" name="username" value="" size="50" />
-            <br />Password: <input type="password" name="password" value="" size="50"/>
-            <br /><input type="submit" value="Log in" />
+            <br />
+            Password: <input type="password" name="password" value="" size="50"/>
+            <br />
+            <input type="submit" value="Log in" />
         </form>
     </body>
 </html>

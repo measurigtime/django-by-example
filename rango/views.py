@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from rango.models import Category, Page
 from rango.forms import CategoryForm, PageForm, UserForm, UserProfileForm
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import  login_required
+from django.contrib.auth.decorators import login_required
 
 
 def index(request):
@@ -45,12 +45,13 @@ def category(request, category_name_slug):
 	return render(request, 'rango/category.html', context_dict)
 
 
+@login_required
 def add_category(request):
 	if request.method == 'POST':
 		form = CategoryForm(request.POST)
 
 		if form.is_valid():
-			cat = form.save(commit = True)
+			cat = form.save(commit=True)
 			print cat, cat.slug
 			return index(request)
 
@@ -63,9 +64,10 @@ def add_category(request):
 	return render(request, 'rango/add_category.html', {'form': form})
 
 
+@login_required
 def add_page(request, category_name_slug):
 	try:
-		cat = Category.objects.get(slug = category_name_slug)
+		cat = Category.objects.get(slug=category_name_slug)
 
 	except Category.DoesNotExist:
 		cat = None
@@ -156,7 +158,8 @@ def user_login(request):
 		else:
 			# Bad login details were provided. So we can't log the user in.
 			print "Invalid login details: {0}, {1}".format(username, password)
-			return HttpResponse("Invalid login details supplied.")
+			login_error = True
+			return render(request, 'rango/login.html', {'login_error': login_error})
 
 	# The request is not a HTTP POST, so display the login form.
 	# This scenario would most likely be a HTTP GET.
