@@ -24,7 +24,7 @@ MEDIA_URL = '/media/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-LOGIN_URL = '/rango/login/'
+LOGIN_URL = '/account/login/'
 
 
 # Quick-start development settings - unsuitable for production
@@ -51,7 +51,15 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rango',
+    'registration',
+    'bootstrap_toolkit',
 )
+
+REGISTRATION_OPEN = True # if true, users can register
+ACCOUT_ACTIVATION_DAYS = 7 # One week activation window
+REGISTRATION_AUTO_LOGIN = True # If true, registered users can be logged in automatically
+LOGIN_REDIRECT_URL = '/rango/'
+LOGIN_URL = '/accounts/login/'
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
