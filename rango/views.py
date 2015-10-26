@@ -5,6 +5,8 @@ from django.shortcuts import render
 from rango.forms import CategoryForm, PageForm, UserForm, UserProfileForm
 from rango.models import Category, Page
 from datetime import datetime
+from django.utils import timezone
+from rango.bing_search import run_query
 
 
 def index(request):
@@ -70,7 +72,7 @@ def index(request):
 	if last_visit:
 		last_visit_time = datetime.strptime(last_visit[:-7], "%Y-%m-%d %H:%M:%S")
 
-		if (datetime.now() - last_visit_time).days > 0:
+		if (datetime.now() - last_visit_time).seconds > 0:
 	        # ...reassign the value of the cookie to +1 of what it was before...
 			visits = visits + 1
 	        # ...and update the last visit cookie, too.
@@ -82,8 +84,9 @@ def index(request):
 	if reset_last_visit_time:
 		request.session['last_visit'] = str(datetime.now())
 		request.session['visits'] = visits
-	context_dict['visits'] = visits
 
+	context_dict['visits'] = visits
+	context_dict['last_visit'] = datetime.strptime(last_visit[:-7], "%Y-%m-%d %H:%M:%S")
 
 	response = render(request,'rango/index.html', context_dict)
 
@@ -251,3 +254,15 @@ def restricted(request):
 # def user_logout(request):
 # 	logout(request)
 # 	return HttpResponseRedirect('/rango/')
+
+def search(request):
+	result_list = []
+	context_dict = {}
+	if request.method == 'POST':
+		query = request.POST['query'].strip()
+		context_dict['query'] = query
+		if query:
+			# Run our bing search on the query to get results
+			result_list = run_query(query)
+			context_dict['result_list'] = result_list
+	return render(request, 'rango/search.html', context_dict)

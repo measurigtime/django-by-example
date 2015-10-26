@@ -1,0 +1,12 @@
+$cat .gitignore
+
+.DS_STORE
+
+.idea/
+
+*.pyc
+
+rango/keys.py
+
+myProject.sublime-workspace
+myProject.sublime-project
