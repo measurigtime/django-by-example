@@ -1,6 +1,8 @@
-import json
-import urllib, urllib2
+
+import urllib
+import urllib2
 from rango.keys import BING_API_KEY
+
 
 def run_query(search_terms):
     # Specify the base
@@ -9,7 +11,7 @@ def run_query(search_terms):
 
     # Specify results_per_page and offset
     results_per_page = 10
-    offset = 0 #offest = 11 would start the returned results from page 2
+    offset = 0  # offest = 11 would start the returned results from page 2
 
     # wrap quotes around our query terms as required by bing_api
     # The query we will use is then stored in a variable query
@@ -18,11 +20,11 @@ def run_query(search_terms):
 
     # construct the latter part of our request url
     search_url = "{0}{1}?$format=json&$top={2}&$skip={3}&Query={4}".format(
-                    root_url,
-                    source,
-                    results_per_page,
-                    offset,
-                    query)
+        root_url,
+        source,
+        results_per_page,
+        offset,
+        query)
     print search_url
     # set authentication with bing servers
     # username must be a blank string
@@ -51,9 +53,8 @@ def run_query(search_terms):
         for result in json_response['d']['results']:
             results.append({
                            'title': result['Title'],
-                           'link':result['Url'],
-                           'summary':result['Description']})
-
+                           'link': result['Url'],
+                           'summary': result['Description']})
 
     # Catch the URLException - something went wrong during connecting!
     except urllib2.URLError, e:
@@ -72,5 +73,3 @@ def run_query(search_terms):
             print rank
             print results['title']
             print results['link']
-
-
