@@ -2,8 +2,9 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect
-from rango.forms import CategoryForm, PageForm, UserForm, UserProfileForm
-from rango.models import Category, Page
+from rango.forms import CategoryForm, PageForm, UserForm, UserProfileForm, LikeForm
+from django.contrib.auth.models import User
+from rango.models import Category, Page, Like
 from datetime import datetime
 from django.utils import timezone
 from rango.bing_search import run_query
@@ -106,16 +107,55 @@ def about(request):
 def category(request, category_name_slug):
 	context_dict = {}
 	try:
-		category = Category.objects.get(slug = category_name_slug)
-		category.views += 1
-		category.save()
-		context_dict['category_name'] = category.name
+		if request.method=='POST':
+			category = Category.objects.get(slug = category_name_slug)
+			category.views += 1
+			category.save()
+			context_dict['category_name'] = category.name
 
-		pages = Page.objects.filter(category = category)
-		context_dict['pages'] = pages
+			pages = Page.objects.filter(category = category)
+			context_dict['pages'] = pages
 
-		context_dict['category'] = category
-		context_dict['category_name_slug'] = category_name_slug
+			context_dict['category'] = category
+			context_dict['category_name_slug'] = category_name_slug
+			user = request.user
+
+			if user:
+				if category in user.categories_liked:
+					context_dict['liked'] = 1
+				else:
+					context_dict['liked'] = 0
+
+		if request.method=='POST':
+			form = LikeForm(request.POST)
+
+			if form.is_valid():
+				user = request.user
+				cat = Category.objects.get(slug=category_name_slug)
+				page = form.save(commit=False)
+				page.category_id= cat.id
+				page.user_id = user.id
+				page.save()
+				page.category_likes = cat.likes + page.liked
+
+				if request.POST['']
+					user.categories_liked.add(cat)
+					cat.user_set.add(user)
+					# cat.save()
+					user.save()
+				else:
+					user.categories_liked.remove(cat)
+					cat.user_set.remove(user)
+					# cat.save()
+					user.save()
+
+				cat.likes = page.category_likes
+				cat.save()
+				# page.save()
+				return category(request, category_name_slug)
+
+			else:
+				print form.errors
 
 	except Category.DoesNotExist:
 		pass
@@ -282,8 +322,4 @@ def track_url(request):
 			url = page.url
 
 	return redirect(url)
-
-
-
-
 

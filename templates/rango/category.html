@@ -1,5 +1,8 @@
 {% extends 'rango/base.html' %}
+
 {% load staticfiles %}
+
+{% load rango_extras %}
 
 {% block title %} {{ category_name }} {% endblock %}
 
@@ -25,4 +28,29 @@
 	<strong>No such category exists</strong>
 	{% endif %}
 	</div>
+
+	{% if user.is_authenticated %}
+		<div>
+
+			<form method='post' action='{% url 'category' category.slug %}'>
+			{% if user.id not in user_id_list %}
+				<input type='hidden' name='liked' id="liked"  value='1' />
+				<button class="btn btn-default btn-lg">
+					<span class="glyphicon glyphicon-thumbs-up" >
+					<input type="submit" name="submit" value="Like" />
+					</span>
+				</button>
+
+			{% else %}
+				<input type='hidden' name='liked' id="liked"  value='0' />
+				<button class="btn btn-default btn-lg active">
+					<span class="glyphicon glyphicon-thumbs-up" >
+					<input type="submit" name="submit" value="Unlike" />
+					</span>
+				</button>
+			{% endif %}
+			</form>
+		</div>
+  	{% endif %}
 {% endblock %}
+

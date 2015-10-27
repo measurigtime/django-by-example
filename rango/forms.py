@@ -46,3 +46,14 @@ class UserProfileForm(forms.ModelForm):
 	class Meta:
 		model = UserProfile
 		fields = ('website', 'picture')
+
+
+class LikeForm(forms.ModelForm):
+	category_id = forms.IntegerField(widget= forms.HiddenInput())
+	user_id = forms.IntegerField(widget=forms.HiddenInput())
+	liked = forms.IntegerField(widget = forms.HiddenInput())
+	category_likes = forms.IntegerField(widget = form.HiddenInput())
+
+	class Meta:
+		model = Like
+		exclude = ('category_id', 'user_id', 'category_views')
